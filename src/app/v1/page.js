@@ -13,20 +13,25 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const groupOneRes = await fetch('/api/reqs?group_id=1243');
-      const groupOneData = await groupOneRes.json();
+      const [groupOneRes, groupTwoRes, groupThreeRes, groupFourRes] =
+        await Promise.all([
+          fetch('/api/reqs?group_id=1243'),
+          fetch('/api/reqs?group_id=1244'),
+          fetch('/api/reqs?group_id=1245'),
+          fetch('/api/reqs?group_id=1246'),
+        ]);
+
+      const [groupOneData, groupTwoData, groupThreeData, groupFourData] =
+        await Promise.all([
+          groupOneRes.json(),
+          groupTwoRes.json(),
+          groupThreeRes.json(),
+          groupFourRes.json(),
+        ]);
+
       setGroupOne(groupOneData);
-
-      const groupTwoRes = await fetch('/api/reqs?group_id=1244');
-      const groupTwoData = await groupTwoRes.json();
       setGroupTwo(groupTwoData);
-
-      const groupThreeRes = await fetch('/api/reqs?group_id=1245');
-      const groupThreeData = await groupThreeRes.json();
       setGroupThree(groupThreeData);
-
-      const groupFourRes = await fetch('/api/reqs?group_id=1246');
-      const groupFourData = await groupFourRes.json();
       setGroupFour(groupFourData);
     }
     fetchData();
