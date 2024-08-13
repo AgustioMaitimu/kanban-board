@@ -7,13 +7,19 @@ import { useRouter } from 'next/navigation';
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
 
 export default function NewTask({ show, onClose, groupID }) {
-  const [opacity, setOpacity] = useState(0);
   const [taskName, setTaskName] = useState('');
   const [progress, setProgress] = useState('');
-  const router = useRouter();
+  const [opacity, setOpacity] = useState(0);
+  const [visibility, setVisibility] = useState('hidden');
 
   useEffect(() => {
-    show ? setOpacity(100) : setOpacity(0);
+    if (show) {
+      setVisibility('flex');
+      setTimeout(() => setOpacity(100), 5);
+    } else {
+      setOpacity(0);
+      setTimeout(() => setVisibility('hidden'), 300);
+    }
   }, [show]);
 
   function handleClose() {
@@ -50,7 +56,8 @@ export default function NewTask({ show, onClose, groupID }) {
 
   return (
     <div
-      className={`${nunito_sans.className} ${show ? 'flex' : 'hidden'} fixed left-0 top-0 z-20 h-screen w-screen items-center justify-center bg-gray-800 bg-opacity-40 opacity-${opacity} shadow-2xl transition-opacity duration-300`}
+      className={`${nunito_sans.className} fixed left-0 top-0 z-20 h-screen w-screen items-center justify-center bg-gray-800 bg-opacity-40 transition-opacity duration-300 ${visibility}`}
+      style={{ opacity: opacity / 100 }}
       onClick={handleClose}
     >
       <div
@@ -79,6 +86,7 @@ export default function NewTask({ show, onClose, groupID }) {
               value={taskName}
               onChange={handleTaskNameChange}
               placeholder="Type your Task"
+              required
               type="text"
               className="rounded-lg border-2 border-[#EDEDED] px-4 py-2 text-xs"
             />
@@ -89,7 +97,8 @@ export default function NewTask({ show, onClose, groupID }) {
               value={progress}
               onChange={handleProgressChange}
               placeholder="70%"
-              type="text"
+              type="number"
+              required
               className="w-[143px] rounded-lg border-2 border-[#EDEDED] px-4 py-2 text-xs"
             />
           </div>
