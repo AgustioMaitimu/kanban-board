@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import Image from 'next/image';
-import React from 'react';
 import { Nunito_Sans } from 'next/font/google';
+import NewTask from './NewTask';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
 
@@ -37,9 +38,10 @@ function TaskItem({ task }) {
               <div className="relative h-4 w-4">
                 <Image
                   alt="check"
-                  layout="fill"
                   className="object-cover"
                   src="/check.png"
+                  fill
+                  sizes="100vw"
                 />
               </div>
             ) : (
@@ -51,8 +53,9 @@ function TaskItem({ task }) {
           <Image
             alt="menu"
             className="object-cover"
-            layout="fill"
             src="/menu.png"
+            fill
+            sizes="100vw"
           />
         </div>
       </div>
@@ -60,7 +63,9 @@ function TaskItem({ task }) {
   );
 }
 
-function GroupComponent({ items, colorCodes, number, description }) {
+function GroupComponent({ groupID, items, colorCodes, number, description }) {
+  const [showNewTask, setShowNewTask] = useState(false);
+
   const containerStyle = {
     borderColor: colorCodes.OutBorder,
     backgroundColor: colorCodes.BG,
@@ -70,6 +75,11 @@ function GroupComponent({ items, colorCodes, number, description }) {
     borderColor: colorCodes.InBorder,
     color: colorCodes.Text,
   };
+
+  // Sort items by progress_percentage in descending order
+  const sortedItems = items
+    ? [...items].sort((a, b) => b.progress_percentage - a.progress_percentage)
+    : [];
 
   return (
     <div
@@ -83,32 +93,41 @@ function GroupComponent({ items, colorCodes, number, description }) {
         Group Task {number}
       </h1>
       <h1 className="text-xs font-medium">{description}</h1>
-      {items && items.length === 0 ? (
-        <h1 className="rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] px-[16px] py-[8px] text-sm font-light text-[#757575]">
-          No Task
-        </h1>
-      ) : items ? (
-        <div className="flex w-full flex-col gap-3 text-sm font-bold text-[#404040]">
-          {items.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      ) : (
+      {!items ? (
         <h1 className="rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] px-[16px] py-[8px] text-sm font-light text-[#757575]">
           Loading Tasks...
         </h1>
+      ) : sortedItems.length === 0 ? (
+        <h1 className="rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] px-[16px] py-[8px] text-sm font-light text-[#757575]">
+          No Task
+        </h1>
+      ) : (
+        <div className="flex w-full flex-col gap-3 text-sm font-bold text-[#404040]">
+          {sortedItems.map((task) => (
+            <TaskItem key={task.id} task={task} />
+          ))}
+        </div>
       )}
-      <div className="flex items-center gap-[5px]">
+      <div
+        className="flex cursor-pointer items-center gap-[5px]"
+        onClick={() => setShowNewTask(true)}
+      >
         <div className="relative aspect-square w-[20px]">
           <Image
             alt="plus"
             src="/plus.png"
             className="object-cover"
-            layout="fill"
+            fill
+            sizes="100vw"
           />
         </div>
         <p className="text-xs font-light">New Task</p>
       </div>
+      <NewTask
+        groupID={groupID}
+        show={showNewTask}
+        onClose={() => setShowNewTask(false)}
+      />
     </div>
   );
 }

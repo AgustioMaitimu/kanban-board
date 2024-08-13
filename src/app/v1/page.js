@@ -46,6 +46,7 @@ export default function Page() {
       </div>
       <div className="flex flex-1 gap-4 overflow-x-scroll p-6">
         <GroupComponent
+          groupID={1243}
           items={groupOne}
           description="January - March"
           number="1"
@@ -57,6 +58,7 @@ export default function Page() {
           }}
         />
         <GroupComponent
+          groupID={1244}
           items={groupTwo}
           description="April - June"
           number="2"
@@ -68,6 +70,7 @@ export default function Page() {
           }}
         />
         <GroupComponent
+          groupID={1245}
           items={groupThree}
           description="July - September"
           number="3"
@@ -79,6 +82,7 @@ export default function Page() {
           }}
         />
         <GroupComponent
+          groupID={1246}
           items={groupFour}
           description="October - December"
           number="4"
