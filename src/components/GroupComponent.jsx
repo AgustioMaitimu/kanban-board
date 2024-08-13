@@ -2,66 +2,9 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Nunito_Sans } from 'next/font/google';
 import NewTask from './NewTask';
+import TaskItem from './TaskItem';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
-
-function ProgressBar({ progress_percentage }) {
-  const progressColor =
-    progress_percentage === 100
-      ? 'bg-[#43936C] rounded-r-full'
-      : 'bg-[#1F959F]';
-
-  return (
-    <div className="flex h-4 w-full">
-      <div
-        style={{ width: `${progress_percentage}%` }}
-        className={`rounded-l-full ${progressColor}`}
-      ></div>
-      <div
-        style={{ width: `${100 - progress_percentage}%` }}
-        className="rounded-r-full bg-[#EDEDED]"
-      ></div>
-    </div>
-  );
-}
-
-function TaskItem({ task }) {
-  return (
-    <div className="flex flex-col gap-2 rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] p-4">
-      <p>{task.name}</p>
-      <div className="w-full border-b border-dashed border-[#E0E0E0]"></div>
-      <div className="mt-1 flex w-full items-center gap-[26px]">
-        <div className="flex w-full gap-3">
-          <ProgressBar progress_percentage={task.progress_percentage} />
-          <div className="text-xs font-normal text-[#757575]">
-            {task.progress_percentage === 100 ? (
-              <div className="relative h-4 w-4">
-                <Image
-                  alt="check"
-                  className="object-cover"
-                  src="/check.png"
-                  fill
-                  sizes="100vw"
-                />
-              </div>
-            ) : (
-              `${task.progress_percentage}%`
-            )}
-          </div>
-        </div>
-        <div className="relative h-6 w-6">
-          <Image
-            alt="menu"
-            className="object-cover"
-            src="/menu.png"
-            fill
-            sizes="100vw"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function GroupComponent({ groupID, items, colorCodes, number, description }) {
   const [showNewTask, setShowNewTask] = useState(false);
@@ -76,7 +19,6 @@ function GroupComponent({ groupID, items, colorCodes, number, description }) {
     color: colorCodes.Text,
   };
 
-  // Sort items by progress_percentage in descending order
   const sortedItems = items
     ? [...items].sort((a, b) => b.progress_percentage - a.progress_percentage)
     : [];
@@ -104,12 +46,12 @@ function GroupComponent({ groupID, items, colorCodes, number, description }) {
       ) : (
         <div className="flex w-full flex-col gap-3 text-sm font-bold text-[#404040]">
           {sortedItems.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem key={task.id} groupID={groupID} task={task} />
           ))}
         </div>
       )}
       <div
-        className="flex cursor-pointer items-center gap-[5px]"
+        className="flex w-fit cursor-pointer items-center gap-[5px]"
         onClick={() => setShowNewTask(true)}
       >
         <div className="relative aspect-square w-[20px]">
