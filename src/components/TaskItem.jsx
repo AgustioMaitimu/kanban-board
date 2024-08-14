@@ -8,8 +8,17 @@ export default function TaskItem({ task, groupID }) {
       ? 'bg-[#43936C] rounded-r-full'
       : 'bg-[#1F959F]';
 
+  const handleDragStart = (event) => {
+    // Store the task ID in dataTransfer
+    event.dataTransfer.setData('text/plain', JSON.stringify(task));
+  };
+
   return (
-    <div className="flex flex-col gap-2 rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] p-4">
+    <div
+      draggable
+      onDragStart={handleDragStart}
+      className="flex flex-col gap-2 rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] p-4"
+    >
       <p>{task.name}</p>
       <div className="w-full border-b border-dashed border-[#E0E0E0]"></div>
       <div className="mt-1 flex w-full items-center gap-[26px]">

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Nunito_Sans } from 'next/font/google';
 import CreateTask from './CreateTask';
 import TaskItem from './TaskItem';
+import axios from 'axios';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
 
@@ -23,8 +24,38 @@ function GroupComponent({ groupID, items, colorCodes, number, description }) {
     ? [...items].sort((a, b) => b.progress_percentage - a.progress_percentage)
     : [];
 
+  function handleDragOver(event) {
+    event.preventDefault();
+  }
+
+  async function handleDrop(event) {
+    event.preventDefault();
+    const taskData = event.dataTransfer.getData('text/plain');
+    if (taskData) {
+      const task = JSON.parse(taskData);
+      const taskID = task.id;
+      const taskGroupID = task.todo_id;
+
+      try {
+        const body = {
+          target_todo_id: groupID,
+        };
+
+        await axios.patch(
+          `/api/reqs?group_id=${taskGroupID}&item_id=${parseInt(taskID)}`,
+          body,
+        );
+        location.reload();
+      } catch (error) {
+        console.error('Error moving task:', error);
+      }
+    }
+  }
+
   return (
     <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       style={containerStyle}
       className={`${nunito_sans.className} flex h-fit w-[326px] shrink-0 select-none flex-col gap-2 rounded-[4px] border-[1px] p-4`}
     >
