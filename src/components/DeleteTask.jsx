@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
 
-export default function NewTask({ show, onClose, groupID }) {
+export default function DeleteTask({ task, show, onClose, groupID }) {
   const [taskName, setTaskName] = useState('');
   const [progress, setProgress] = useState('');
   const [opacity, setOpacity] = useState(0);
@@ -37,17 +37,11 @@ export default function NewTask({ show, onClose, groupID }) {
     setProgress(e.target.value);
   }
 
-  async function handleSave() {
+  async function handleDelete() {
     try {
-      const body = {
-        name: taskName,
-        progress_percentage: progress ? progress : 0,
-      };
-
-      await axios.post(`/api/reqs?group_id=${groupID.toString()}`, body);
-
-      setTaskName('');
-      setProgress('');
+      await axios.delete(
+        `/api/reqs?group_id=${groupID.toString()}&item_id=${task.id}`,
+      );
       location.reload();
     } catch (error) {
       console.error('Error saving task:', error);
@@ -65,7 +59,17 @@ export default function NewTask({ show, onClose, groupID }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold">Create Task</h1>
+          <div className="flex items-center gap-2">
+            <div className="relative h-6 w-6">
+              <Image
+                alt="alert"
+                className="object-cover"
+                src="/alert.png"
+                layout="fill"
+              />
+            </div>
+            <h1 className="text-lg font-bold">Delete Task</h1>
+          </div>
           <div
             className="relative h-6 w-6 cursor-pointer"
             onClick={handleClose}
@@ -79,30 +83,9 @@ export default function NewTask({ show, onClose, groupID }) {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-bold text-[#404040]">Task Name</p>
-            <input
-              value={taskName}
-              onChange={handleTaskNameChange}
-              placeholder="Type your Task"
-              required
-              type="text"
-              className="rounded-lg border-2 border-[#EDEDED] px-4 py-2 text-xs"
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-bold text-[#404040]">Progress</p>
-            <input
-              value={progress}
-              onChange={handleProgressChange}
-              placeholder="70%"
-              type="number"
-              required
-              className="w-[143px] rounded-lg border-2 border-[#EDEDED] px-4 py-2 text-xs"
-            />
-          </div>
-        </div>
+        <p className="text-sm font-normal text-[#404040]">
+          Are you sure want to delete this task? your action can’t be reverted.
+        </p>
         <div className="flex self-end">
           <button
             className="mr-[10px] h-[32px] rounded-lg border-[1px] border-[#E0E0E0] px-4 py-1 text-sm font-bold"
@@ -111,10 +94,10 @@ export default function NewTask({ show, onClose, groupID }) {
             Cancel
           </button>
           <button
-            onClick={handleSave}
-            className="h-[32px] rounded-lg bg-[#01959F] px-4 py-1 text-sm font-bold text-white"
+            onClick={handleDelete}
+            className="h-[32px] rounded-lg bg-[#E11428] px-4 py-1 text-sm font-bold text-white"
           >
-            Save Task
+            Delete
           </button>
         </div>
       </div>
