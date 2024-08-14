@@ -13,7 +13,7 @@ export default function TaskItem({ task, groupID }) {
       <p>{task.name}</p>
       <div className="w-full border-b border-dashed border-[#E0E0E0]"></div>
       <div className="mt-1 flex w-full items-center gap-[26px]">
-        <div className="flex w-full gap-3">
+        <div className="flex w-full items-center gap-3">
           <div className="flex h-4 w-full">
             <div
               style={{ width: `${task.progress_percentage}%` }}
