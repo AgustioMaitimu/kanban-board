@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import ProgressBar from './ProgressBar';
+import axios from 'axios';
 
 export default function TaskItem({ task, groupID }) {
   const [displayMenu, setDisplayMenu] = useState(false);
@@ -11,6 +12,20 @@ export default function TaskItem({ task, groupID }) {
   const [editHover, setEditHover] = useState(false);
   const [trashHover, setTrashHover] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        handleClose();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   function handleMenuClick() {
     if (displayMenu) {
@@ -26,19 +41,37 @@ export default function TaskItem({ task, groupID }) {
     setTimeout(() => setDisplayMenu(false), 300);
   }
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        handleClose();
-      }
+  async function handleMoveRight() {
+    try {
+      const body = {
+        target_todo_id: parseInt(task.todo_id + 1),
+      };
+
+      await axios.patch(
+        `/api/reqs?group_id=${groupID.toString()}&item_id=${parseInt(task.id)}`,
+        body,
+      );
+      location.reload();
+    } catch (error) {
+      console.error('Error moving task:', error);
     }
+  }
 
-    document.addEventListener('mousedown', handleClickOutside);
+  async function handleMoveLeft() {
+    try {
+      const body = {
+        target_todo_id: parseInt(task.todo_id - 1),
+      };
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+      await axios.patch(
+        `/api/reqs?group_id=${groupID.toString()}&item_id=${parseInt(task.id)}`,
+        body,
+      );
+      location.reload();
+    } catch (error) {
+      console.error('Error moving task:', error);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2 rounded-[4px] border-[1px] border-[#E0E0E0] bg-[#FAFAFA] p-4">
@@ -82,6 +115,7 @@ export default function TaskItem({ task, groupID }) {
             className={`${groupID == 1246 && 'right-0'} ${displayMenu ? 'flex' : 'hidden'} dropdown-content bottom-[-135px] flex w-[320px] flex-col rounded-md bg-white py-2 shadow-md transition-all duration-300`}
           >
             <div
+              onClick={handleMoveRight}
               onMouseEnter={() => setRightHover(true)}
               onMouseLeave={() => setRightHover(false)}
               className={`${groupID == 1246 && 'hidden'} flex cursor-pointer items-center gap-4 py-2 pl-4`}
@@ -102,6 +136,7 @@ export default function TaskItem({ task, groupID }) {
               </p>
             </div>
             <div
+              onClick={handleMoveLeft}
               onMouseEnter={() => setLeftHover(true)}
               onMouseLeave={() => setLeftHover(false)}
               className={`${groupID == 1243 && 'hidden'} flex cursor-pointer items-center gap-4 py-2 pl-4`}
