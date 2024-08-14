@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Nunito_Sans } from 'next/font/google';
-import NewTask from './NewTask';
+import CreateTask from './CreateTask';
 import TaskItem from './TaskItem';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
@@ -65,7 +65,7 @@ function GroupComponent({ groupID, items, colorCodes, number, description }) {
         </div>
         <p className="text-xs font-light">New Task</p>
       </div>
-      <NewTask
+      <CreateTask
         groupID={groupID}
         show={showNewTask}
         onClose={() => setShowNewTask(false)}

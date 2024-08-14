@@ -25,7 +25,7 @@ export default function TaskItem({ task, groupID }) {
             ></div>
           </div>
           <div className="text-xs font-normal text-[#757575]">
-            {task.progress_percentage >= 100 ? (
+            {task.progress_percentage == 100 ? (
               <div className="relative h-4 w-4">
                 <Image
                   alt="check"
@@ -36,7 +36,7 @@ export default function TaskItem({ task, groupID }) {
                 />
               </div>
             ) : (
-              `${task.progress_percentage < 0 ? '0' : task.progress_percentage}%`
+              `${task.progress_percentage == 0 ? '0' : task.progress_percentage}%`
             )}
           </div>
           <ItemMenu groupID={groupID} task={task} />

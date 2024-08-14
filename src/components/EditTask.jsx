@@ -6,9 +6,9 @@ import { useRouter } from 'next/navigation';
 
 const nunito_sans = Nunito_Sans({ subsets: ['latin'] });
 
-export default function NewTask({ show, onClose, groupID }) {
-  const [taskName, setTaskName] = useState('');
-  const [progress, setProgress] = useState('');
+export default function EditTask({ task, show, onClose, groupID }) {
+  const [taskName, setTaskName] = useState(task.name);
+  const [progress, setProgress] = useState(task.progress_percentage);
   const [opacity, setOpacity] = useState(0);
   const [visibility, setVisibility] = useState('hidden');
 
@@ -44,8 +44,10 @@ export default function NewTask({ show, onClose, groupID }) {
         progress_percentage: progress ? progress : 0,
       };
 
-      await axios.post(`/api/reqs?group_id=${groupID.toString()}`, body);
-
+      await axios.patch(
+        `/api/reqs?group_id=${groupID.toString()}&item_id=${task.id}`,
+        body,
+      );
       setTaskName('');
       setProgress('');
       location.reload();

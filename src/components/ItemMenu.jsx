@@ -2,6 +2,7 @@ import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import DeleteTask from './DeleteTask';
+import EditTask from './EditTask';
 
 function ItemMenu({ groupID, task }) {
   const [displayMenu, setDisplayMenu] = useState(false);
@@ -10,8 +11,9 @@ function ItemMenu({ groupID, task }) {
   const [rightHover, setRightHover] = useState(false);
   const [editHover, setEditHover] = useState(false);
   const [trashHover, setTrashHover] = useState(false);
-  const dropdownRef = useRef(null);
   const [showDeleteTask, setShowDeleteTask] = useState(false);
+  const [showEditTask, setShowEditTask] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -134,6 +136,7 @@ function ItemMenu({ groupID, task }) {
           </p>
         </div>
         <div
+          onClick={() => setShowEditTask((prev) => !prev)}
           onMouseEnter={() => setEditHover(true)}
           onMouseLeave={() => setEditHover(false)}
           className="flex cursor-pointer items-center gap-4 py-2 pl-4"
@@ -180,6 +183,12 @@ function ItemMenu({ groupID, task }) {
         groupID={groupID}
         show={showDeleteTask}
         onClose={() => setShowDeleteTask(false)}
+      />
+      <EditTask
+        task={task}
+        groupID={groupID}
+        show={showEditTask}
+        onClose={() => setShowEditTask(false)}
       />
     </div>
   );
